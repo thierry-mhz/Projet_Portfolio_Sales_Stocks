@@ -1,0 +1,13 @@
+product_id,product_name,category,unit_cost
+1,Produit 01,A,8
+2,Produit 02,A,32
+3,Produit 03,A,27
+4,Produit 04,A,20
+5,Produit 05,B,20
+6,Produit 06,B,35
+7,Produit 07,B,8
+8,Produit 08,B,29
+9,Produit 09,C,12
+10,Produit 10,C,8
+11,Produit 11,C,23
+12,Produit 12,C,39

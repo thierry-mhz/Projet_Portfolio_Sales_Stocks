@@ -1,0 +1,18 @@
+// Mesures à créer dans Power BI ; import des tables CSV requis.
+// Relations 1-* à sens unique : dimensions vers les deux tables de faits.
+// Marquer dim_date comme table de dates, colonne date au type Date.
+CA = SUM(fact_sales[net_revenue])
+Quantités vendues = SUM(fact_sales[quantity])
+Marge brute = SUM(fact_sales[net_revenue]) - SUM(fact_sales[total_cost])
+Taux de marge = DIVIDE([Marge brute], [CA])
+CA N-1 = CALCULATE([CA], SAMEPERIODLASTYEAR(dim_date[date]))
+Évolution CA = DIVIDE([CA] - [CA N-1], [CA N-1])
+Stock dernière date =
+VAR DerniereDate = MAX(dim_date[date])
+RETURN CALCULATE(SUM(fact_stock[stock_qty]), dim_date[date] = DerniereDate)
+Couples en rupture =
+VAR DerniereDate = MAX(dim_date[date])
+RETURN CALCULATE(COUNTROWS(fact_stock), dim_date[date] = DerniereDate, fact_stock[stock_qty] = 0)
+// Les deux dernières mesures portent sur la dernière date du contexte sélectionné.
+// Ce jeu contient un relevé quotidien pour chaque couple produit/site.
+// DAX fourni comme modèle : validation dans Power BI restant à effectuer.
