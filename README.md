@@ -1,29 +1,76 @@
-Projet personnel — Pilotage ventes et stocks
-STATUT : kit généré à partir de données entièrement synthétiques. Ce projet n’est ni une mission client ni une réalisation professionnelle passée. Les variations sont aléatoires et ne permettent aucune conclusion métier réelle.
-Démarrage
-Installer Python et pandas dans votre environnement : `pip install pandas`.
-Depuis la racine du projet : `python python/analyse.py`.
-Examiner les contrôles et les fichiers results/. Ils ont aussi été exécutés lors de la génération du kit.
-Ouvrir sql/analyses.sql dans un environnement SQLite après import des CSV. Les dix requêtes ont été exécutées avec succès lors de la préparation. Adapter les fonctions de date pour SQL Server.
-Dans Power BI Desktop, importer les cinq CSV et contrôler les types (dates, entiers, décimaux).
-Modèle
-FactSales : une ligne de vente, identifiant sale_line_id.
-FactStock : un produit, un site, une date ; stock de fin de journée.
-DimDate, DimProduct et DimSite : relations 1-* à sens unique vers les deux tables de faits. Ne pas relier les faits directement. Marquer DimDate comme table de dates. Les noms techniques restent ceux des fichiers : fact_sales, fact_stock, dim_date, dim_product, dim_site.
-Rapport à réaliser
-Page 1 : CA, marge brute, taux de marge, évolution annuelle, courbe mensuelle, détail par site et catégorie.
-Page 2 : stock à la dernière date sélectionnée, couples produit/site en rupture, détail produit/site. Ne pas sommer les relevés de stock sur les dates.
-Ajouter les mesures du fichier powerbi/mesures.dax puis comparer les totaux aux résultats Python et SQL. Les mesures DAX n’ont pas été exécutées dans Power BI.
-Qualité et limites
-Contrôles exécutés : unicité des ventes et des relevés de stock, intégrité des trois clés, quantités admissibles, recalcul du CA et rapprochement SQL/Python.
-Pas de retours, remises, taxes, devises multiples, budget ni délais d’approvisionnement. Stock et ventes générés indépendamment : ne pas inférer un effet causal entre eux. Une rupture désigne ici un stock nul, pas une vente perdue.
-CA N-1 : période comparable de l’année précédente ; 2024 n’a pas d’historique 2023.
-Le taux de marge est marge/CA, pas marge/coût.
-Tests Power BI à effectuer
-CA total et marge identiques à results/validation_summary.csv (tolérance 0,01).
-Un filtre site/produit agit sur ventes et stocks.
-Stock à date cohérent avec SQL, jamais somme de plusieurs jours.
-Pas de division par zéro ; comparaison N-1 vide si historique absent.
-Droits RLS et actualisation : à construire et tester séparément, non fournis.
-Publication
-Avant toute publication, relire les chiffres et indiquer clairement « projet personnel sur données synthétiques ». Aucun dépôt, compte cloud, fichier PBIX ou déploiement Service/Fabric n’a été créé.
+# Pilotage des ventes et des stocks
+
+> **Statut — projet personnel sur données entièrement synthétiques.**
+>
+> Ce projet n’est ni une mission client ni une réalisation professionnelle passée. Les variations sont aléatoires et ne permettent aucune conclusion métier réelle.
+
+## Démarrage
+
+1. Installez Python et pandas dans votre environnement :
+   ```bash
+   pip install pandas
+   ```
+2. Depuis la racine du projet, lancez l’analyse :
+   ```bash
+   python python/analyse.py
+   ```
+3. Examinez les contrôles et les fichiers générés dans `results/`. Ces contrôles ont également été exécutés lors de la génération du kit.
+4. Pour consulter les analyses SQL, ouvrez `sql/analyses.sql` dans un environnement SQLite après avoir importé les CSV. Les dix requêtes ont été exécutées avec succès lors de la préparation. Adaptez les fonctions de date pour SQL Server.
+5. Dans Power BI Desktop, importez les cinq CSV et vérifiez les types de données (dates, entiers et décimaux).
+
+## Modèle de données
+
+| Table | Granularité / rôle |
+|---|---|
+| `FactSales` | Une ligne par vente, identifiée par `sale_line_id`. |
+| `FactStock` | Un produit, un site et une date ; stock de fin de journée. |
+| `DimDate`, `DimProduct`, `DimSite` | Dimensions reliées en 1-à-plusieurs, à sens unique, aux deux tables de faits. |
+
+Ne reliez pas directement les deux tables de faits. Marquez `DimDate` comme table de dates. Les noms techniques des fichiers restent `fact_sales`, `fact_stock`, `dim_date`, `dim_product` et `dim_site`.
+
+## Rapport Power BI à réaliser
+
+### Page 1 — Ventes
+
+- Chiffre d’affaires (CA), marge brute et taux de marge
+- Évolution annuelle et courbe mensuelle
+- Détail par site et par catégorie
+
+### Page 2 — Stocks
+
+- Stock à la dernière date sélectionnée
+- Couples produit/site en rupture
+- Détail par produit et par site
+
+Ne faites pas la somme des relevés de stock sur plusieurs dates. Ajoutez les mesures du fichier `powerbi/mesures.dax`, puis comparez les totaux aux résultats Python et SQL. Les mesures DAX n’ont pas été exécutées dans Power BI.
+
+## Qualité et limites
+
+### Contrôles exécutés
+
+- Unicité des ventes et des relevés de stock
+- Intégrité des trois clés
+- Quantités admissibles
+- Recalcul du CA et rapprochement SQL/Python
+
+### Limites des données et des indicateurs
+
+- Pas de retours, remises, taxes, devises multiples, budget ni délais d’approvisionnement.
+- Stocks et ventes sont générés indépendamment : n’en déduisez pas de lien causal.
+- Une rupture désigne ici un stock nul, et non une vente perdue.
+- Le CA N-1 correspond à la période comparable de l’année précédente ; 2024 n’a pas d’historique 2023.
+- Le taux de marge est calculé comme marge / CA, et non marge / coût.
+
+## Tests Power BI à effectuer
+
+- Vérifier que le CA total et la marge correspondent à `results/validation_summary.csv` (tolérance : 0,01).
+- Vérifier qu’un filtre sur le site ou le produit agit sur les ventes et les stocks.
+- Vérifier que le stock à une date est cohérent avec SQL et n’est jamais la somme de plusieurs jours.
+- Vérifier l’absence de division par zéro et que la comparaison N-1 reste vide si l’historique est absent.
+- Construire et tester séparément les droits RLS et l’actualisation ; ils ne sont pas fournis.
+
+## Publication
+
+Avant toute publication, relisez les chiffres et indiquez clairement : **« projet personnel sur données synthétiques »**.
+
+Aucun dépôt, compte cloud, fichier PBIX ou déploiement Service/Fabric n’a été créé.
