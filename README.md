@@ -25,8 +25,7 @@ Les contrôles Python couvrent notamment l’unicité des enregistrements, l’i
 ## Indicateurs et précautions d’interprétation
 
 Le projet comprend le chiffre d’affaires, les quantités vendues, la marge brute, le taux de marge, des comparaisons temporelles et le suivi du stock à la dernière date sélectionnée. Le stock est un relevé ponctuel : il ne doit pas être additionné sur plusieurs jours. Une rupture désigne ici un stock nul et ne représente pas une vente perdue.
-
-Les données de ventes et de stocks sont générées indépendamment. Le projet ne modélise pas les retours, remises, taxes, budgets ou délais d’approvisionnement ; il ne permet donc pas d’établir de causalité ni de formuler des recommandations métier réelles.
+Le projet ne modélise pas les retours, remises, taxes, budgets ou délais d’approvisionnement ; il ne permet donc pas d’établir de causalité ni de formuler des recommandations métier réelles.
 
 ## Fichiers du projet
 
