@@ -1,76 +1,37 @@
 # Pilotage des ventes et des stocks
 
-> **Statut — projet personnel sur données entièrement synthétiques.**
->
-> Ce projet n’est ni une mission client ni une réalisation professionnelle passée. Les variations sont aléatoires et ne permettent aucune conclusion métier réelle.
+**Projet portfolio en analyse de données et en visualisation décisionnelle**
 
-## Démarrage
+Ce projet présente une démarche structurée pour analyser les ventes et les stocks, suivre des indicateurs de performance et restituer les résultats à l’aide de Python, SQL et Power BI.
 
-1. Installez Python et pandas dans votre environnement :
-   ```bash
-   pip install pandas
-   ```
-2. Depuis la racine du projet, lancez l’analyse :
-   ```bash
-   python python/analyse.py
-   ```
-3. Examinez les contrôles et les fichiers générés dans `results/`. Ces contrôles ont également été exécutés lors de la génération du kit.
-4. Pour consulter les analyses SQL, ouvrez `sql/analyses.sql` dans un environnement SQLite après avoir importé les CSV. Les dix requêtes ont été exécutées avec succès lors de la préparation. Adaptez les fonctions de date pour SQL Server.
-5. Dans Power BI Desktop, importez les cinq CSV et vérifiez les types de données (dates, entiers et décimaux).
+> **Périmètre :** projet personnel réalisé à partir de données entièrement synthétiques. Il ne s’agit pas d’une mission client ou d’une expérience professionnelle passée. Les données illustrent une méthode, mais ne permettent pas de tirer de conclusions métier réelles.
 
-## Modèle de données
+## Objectifs
 
-| Table | Granularité / rôle |
-|---|---|
-| `FactSales` | Une ligne par vente, identifiée par `sale_line_id`. |
-| `FactStock` | Un produit, un site et une date ; stock de fin de journée. |
-| `DimDate`, `DimProduct`, `DimSite` | Dimensions reliées en 1-à-plusieurs, à sens unique, aux deux tables de faits. |
+- Analyser le chiffre d’affaires, les quantités vendues et la marge brute.
+- Comparer les tendances dans le temps et explorer les résultats par produit, catégorie et site.
+- Suivre le stock à une date donnée et repérer les situations de stock nul.
+- Fiabiliser les indicateurs grâce à des contrôles et à des rapprochements entre outils.
 
-Ne reliez pas directement les deux tables de faits. Marquez `DimDate` comme table de dates. Les noms techniques des fichiers restent `fact_sales`, `fact_stock`, `dim_date`, `dim_product` et `dim_site`.
+## Démarche et livrables
 
-## Rapport Power BI à réaliser
+- **Python** — préparation de synthèses et contrôles de cohérence des données.
+- **SQL** — analyses des ventes, des tendances, des produits et des stocks.
+- **Power BI** — rapport interactif et mesures DAX pour explorer les principaux indicateurs.
+- **Modèle de données** — séparation des ventes et des stocks en tables de faits, reliées à des dimensions communes.
 
-### Page 1 — Ventes
+Les contrôles Python couvrent notamment l’unicité des enregistrements, l’intégrité des références, la cohérence des quantités et le calcul du chiffre d’affaires. Un rapprochement des totaux entre pandas et SQLite permet également de vérifier les résultats.
 
-- Chiffre d’affaires (CA), marge brute et taux de marge
-- Évolution annuelle et courbe mensuelle
-- Détail par site et par catégorie
+## Indicateurs et précautions d’interprétation
 
-### Page 2 — Stocks
+Le projet comprend le chiffre d’affaires, les quantités vendues, la marge brute, le taux de marge, des comparaisons temporelles et le suivi du stock à la dernière date sélectionnée. Le stock est un relevé ponctuel : il ne doit pas être additionné sur plusieurs jours. Une rupture désigne ici un stock nul et ne représente pas une vente perdue.
 
-- Stock à la dernière date sélectionnée
-- Couples produit/site en rupture
-- Détail par produit et par site
+Les données de ventes et de stocks sont générées indépendamment. Le projet ne modélise pas les retours, remises, taxes, budgets ou délais d’approvisionnement ; il ne permet donc pas d’établir de causalité ni de formuler des recommandations métier réelles.
 
-Ne faites pas la somme des relevés de stock sur plusieurs dates. Ajoutez les mesures du fichier `powerbi/mesures.dax`, puis comparez les totaux aux résultats Python et SQL. Les mesures DAX n’ont pas été exécutées dans Power BI.
+## Fichiers du projet
 
-## Qualité et limites
-
-### Contrôles exécutés
-
-- Unicité des ventes et des relevés de stock
-- Intégrité des trois clés
-- Quantités admissibles
-- Recalcul du CA et rapprochement SQL/Python
-
-### Limites des données et des indicateurs
-
-- Pas de retours, remises, taxes, devises multiples, budget ni délais d’approvisionnement.
-- Stocks et ventes sont générés indépendamment : n’en déduisez pas de lien causal.
-- Une rupture désigne ici un stock nul, et non une vente perdue.
-- Le CA N-1 correspond à la période comparable de l’année précédente ; 2024 n’a pas d’historique 2023.
-- Le taux de marge est calculé comme marge / CA, et non marge / coût.
-
-## Tests Power BI à effectuer
-
-- Vérifier que le CA total et la marge correspondent à `results/validation_summary.csv` (tolérance : 0,01).
-- Vérifier qu’un filtre sur le site ou le produit agit sur les ventes et les stocks.
-- Vérifier que le stock à une date est cohérent avec SQL et n’est jamais la somme de plusieurs jours.
-- Vérifier l’absence de division par zéro et que la comparaison N-1 reste vide si l’historique est absent.
-- Construire et tester séparément les droits RLS et l’actualisation ; ils ne sont pas fournis.
-
-## Publication
-
-Avant toute publication, relisez les chiffres et indiquez clairement : **« projet personnel sur données synthétiques »**.
-
-Aucun dépôt, compte cloud, fichier PBIX ou déploiement Service/Fabric n’a été créé.
+- `data/` — données synthétiques au format CSV.
+- `python/analyse.py` — contrôles et synthèses.
+- `sql/analyses.sql` — requêtes d’analyse.
+- `powerbi/Projet_Sales_Stocks.pbix` — rapport Power BI.
+- `powerbi/mesures.dax` — mesures de référence.
