@@ -32,5 +32,6 @@ Le projet ne modélise pas les retours, remises, taxes, budgets ou délais d’a
 - `data/` — données synthétiques au format CSV.
 - `python/analyse.py` — contrôles et synthèses.
 - `sql/analyses.sql` — requêtes d’analyse.
+- 'results/' - examiner les contrôles.
 - `powerbi/Projet_Sales_Stocks.pbix` — rapport Power BI.
 - `powerbi/mesures.dax` — mesures de référence.
