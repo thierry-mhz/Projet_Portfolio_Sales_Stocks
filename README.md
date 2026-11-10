@@ -1,58 +1,156 @@
-# Pilotage des ventes et des stocks
+# Sales & Inventory Analytics
+### End-to-end Business Intelligence portfolio project
 
-Projet personnel de portfolio Data Analyst / BI consacré à l’analyse des ventes et au suivi des stocks, de la préparation des données jusqu’à la restitution décisionnelle dans Power BI.
+[![Python](https://img.shields.io/badge/Python-Pandas-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![SQL](https://img.shields.io/badge/SQL-SQLite-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![Power BI](https://img.shields.io/badge/Power%20BI-DAX-F2C811?logo=powerbi&logoColor=black)](https://powerbi.microsoft.com/)
 
-> **Données fictives :** le jeu de données est synthétique et sert uniquement à illustrer une démarche d’analyse. Il ne représente aucune entreprise ni activité réelle.
+A portfolio project demonstrating an end-to-end analytics workflow: data validation with **Python**, business analysis with **SQL**, and decision-oriented reporting with **Power BI**.
 
-## Objectifs
+> **Data disclaimer:** all datasets are synthetic and created for demonstration purposes. Figures below are outputs from this dataset; they do not represent the performance of a real company.
 
-- Suivre le chiffre d’affaires, les quantités vendues et la marge brute.
-- Analyser les évolutions dans le temps et comparer les performances par produit, catégorie et site.
-- Suivre les niveaux de stock à une date donnée et repérer les situations de rupture.
-- Mettre en place des contrôles de qualité et rapprocher les résultats entre Python et SQL.
+## Business questions
 
-## Démarche et outils
+- How do revenue, units sold and gross margin evolve over time?
+- Which products, categories and sites contribute most to revenue?
+- What is the stock position at the latest available date?
+- Which product-site combinations are out of stock?
+- Can key aggregates be reconciled across Python and SQL?
 
-### 1. Préparation et qualité des données — Python / Pandas
+## Dashboard preview
 
-Le traitement Python prépare les données et contrôle notamment :
-- l’unicité des identifiants ;
-- l’intégrité référentielle entre les tables ;
-- la cohérence des quantités et des montants ;
-- le rapprochement des agrégats calculés avec Pandas et SQLite.
+### Commercial performance
+![Commercial performance dashboard](Screenshots/Performance%20Commerciale.png)
 
-### 2. Analyse — SQL / SQLite
+### Inventory monitoring
+![Inventory monitoring dashboard](Screenshots/Pilotage%20des%20stocks.png)
 
-Les requêtes SQL produisent des analyses agrégées sur les ventes et les stocks : volumes, chiffre d’affaires, marge, tendances et niveaux de stock.
+The Power BI report is available as a [PDF export](powerbi/Sales%20%26%20Inventory%20Analytics%20pdf.pdf) and as a [Power BI Desktop file (.pbix)](powerbi/Sales%20%26%20Inventory%20Analytics.pbix).
 
-### 3. Modélisation et visualisation — Power BI / DAX
+## Key outputs
 
-Le modèle s’appuie sur deux tables de faits distinctes (ventes et stocks) reliées à des dimensions communes, notamment date, produit et site. Le rapport Power BI permet d’explorer les indicateurs commerciaux et les niveaux de stock.
+| Metric | Result |
+|---|---:|
+| Revenue | €1,467,589.34 |
+| Gross margin | €490,454.34 |
+| Gross margin rate | 33.4% |
+| Sales records | 6,000 |
+| Stock records | 26,316 |
+| Analysis period | January 2024 – December 2025 |
 
-## Indicateurs suivis
+These figures are calculated from the committed synthetic dataset. The gross margin rate is gross margin divided by revenue.
 
-- Chiffre d’affaires et quantités vendues
-- Marge brute
-- Évolution des ventes dans le temps
-- Performance par produit, catégorie et site
-- Stock disponible et détection des références à stock nul
+## Technical workflow
 
-**Point d’attention :** le stock est interprété à partir des données disponibles et de leur date de référence. Il ne doit pas être assimilé à un stock temps réel si les données sources ne sont pas actualisées en continu.
+```mermaid
+flowchart LR
+    A[CSV source data] --> B[Python / Pandas]
+    B --> C[Data quality checks]
+    C --> D[SQLite database]
+    D --> E[SQL analysis]
+    C --> F[Validated outputs]
+    E --> G[Power BI model]
+    F --> G
+    G --> H[Sales dashboard]
+    G --> I[Inventory dashboard]
+```
 
+### 1. Data preparation and validation — Python
 
-## Environnement
+The script in `python/analyse.py`:
+- Loads the CSV files from `data/`.
+- Checks uniqueness of sales line identifiers and stock snapshot keys.
+- Checks referential integrity against product, site and date dimensions.
+- Checks positive sales quantities, non-negative stock and revenue arithmetic.
+- Loads the data into an in-memory SQLite database and reconciles total revenue.
+- Exports monthly revenue and a validation summary to `results/`.
 
-- Python, Pandas
-- SQL, SQLite
-- Power BI, DAX
+### 2. Business analysis — SQL
 
-## Limites et pistes d’amélioration
+The queries in [sql/analyses.sql](sql/analyses.sql) cover:
+- Revenue and units sold.
+- Monthly revenue trends.
+- Revenue by site and product.
+- Gross margin by category.
+- Top products.
+- Previous-month comparison using `LAG()`.
+- Product ranking by site using `DENSE_RANK()`.
+- Cumulative revenue using window functions.
+- Latest-date stock and out-of-stock counts.
 
-- Les données étant synthétiques, les résultats n’ont pas de portée opérationnelle réelle.
-- L’analyse du stock dépend de la granularité et des dates présentes dans les données sources.
-- Des évolutions possibles : automatiser l’actualisation, enrichir les contrôles de qualité, documenter davantage les règles de gestion et ajouter des tests.
+### 3. Data modeling and reporting — Power BI
 
-## Auteur
+The report uses separate sales and inventory fact tables with shared dimensions.
 
-**Thierry Muhoza**  
-[LinkedIn](https://linkedin.com/in/muhoza-banyangiriki) · [GitHub](https://github.com/thierry-mhz/Projet_Portfolio_Sales_Stocks)
+| Table | Role | Expected grain |
+|---|---|---|
+| `fact_sales` | Sales transactions | One row per sales line |
+| `fact_stock` | Inventory snapshots | One row per date, product and site |
+| `dim_date` | Calendar attributes | One row per date |
+| `dim_product` | Product attributes | One row per product |
+| `dim_site` | Site attributes | One row per site |
+
+Core DAX measures are documented in [powerbi/mesures.dax](powerbi/mesures.dax). The latest-stock measures use the latest date in the current date-filter context; interpret them accordingly.
+
+## Repository structure
+
+```text
+.
+├── data/                 # Synthetic CSV source data
+├── python/
+│   └── analyse.py        # Validation and output generation
+├── sql/
+│   └── analyses.sql      # Business analysis queries
+├── powerbi/
+│   ├── Sales & Inventory Analytics.pbix
+│   ├── Sales & Inventory Analytics pdf.pdf
+│   └── mesures.dax
+├── Screenshots/          # Dashboard previews
+├── results/              # Generated CSV outputs
+├── requirements.txt
+└── README.md
+```
+
+## Run locally
+
+Requirements: Python 3.10 or newer.
+
+```bash
+git clone https://github.com/thierry-mhz/Projet_Portfolio_Sales_Stocks.git
+cd Projet_Portfolio_Sales_Stocks
+
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS / Linux:
+source .venv/bin/activate
+
+pip install -r requirements.txt
+python python/analyse.py
+```
+
+The script regenerates `results/monthly_revenue.csv` and `results/validation_summary.csv`.
+
+The SQL queries can be run against a SQLite database populated from the CSV files. The Power BI report can be opened with Power BI Desktop.
+
+## Assumptions and limitations
+
+- The dataset is synthetic; results are illustrative, not operational KPIs.
+- Inventory is a snapshot-based measure, not a real-time stock feed.
+- The SQL query for the latest stock date uses the latest date across the full dataset. If sites have different snapshot dates, a per-site latest-date rule may be more appropriate.
+- The current Python script uses assertions for validation. For production use, replace them with explicit validation exceptions, structured logging and automated tests.
+- The project does not currently demonstrate scheduled refresh or production deployment.
+
+## Potential next steps
+
+- Add automated unit tests with `pytest` and a CI workflow.
+- Add a documented data dictionary and business definitions for each KPI.
+- Add a per-site latest-stock-date analysis and stock ageing / turnover metrics.
+- Improve exception handling and logging in the Python pipeline.
+- Document the Power BI relationship diagram and filter behavior.
+
+## Author
+
+**Thierry Muhoza Banyangiriki**  
+Business Data Analyst | Business Intelligence & Performance Analytics
+
+[LinkedIn](https://linkedin.com/in/muhoza-banyangiriki) · [GitHub profile](https://github.com/thierry-mhz)
