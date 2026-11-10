@@ -1,33 +1,35 @@
-
-🌍 **Languages:** [English](README.md) | [Français](README.fr.md)
 # Sales & Inventory Analytics
+
 ### End-to-end Business Intelligence portfolio project
 
 [![Python](https://img.shields.io/badge/Python-Pandas-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![SQL](https://img.shields.io/badge/SQL-SQLite-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![Power BI](https://img.shields.io/badge/Power%20BI-DAX-F2C811?logo=powerbi&logoColor=black)](https://powerbi.microsoft.com/)
 
-A portfolio project demonstrating an end-to-end analytics workflow: data validation with **Python**, business analysis with **SQL**, and decision-oriented reporting with **Power BI**.
+An end-to-end analytics project combining data quality checks with **Python**, business analysis with **SQL**, and interactive reporting with **Power BI**.
 
-> **Data disclaimer:** all datasets are synthetic and created for demonstration purposes. Figures below are outputs from this dataset; they do not represent the performance of a real company.
+> **Data scope:** All data is synthetic and for demonstration only. The reported figures do not represent the performance of a real company.
 
-## Business questions
+## Project overview
 
-- How do revenue, units sold and gross margin evolve over time?
-- Which products, categories and sites contribute most to revenue?
-- What is the stock position at the latest available date?
-- Which product-site combinations are out of stock?
-- Can key aggregates be reconciled across Python and SQL?
+The analysis explores:
+
+- Revenue, units sold and gross margin over time.
+- Performance by product, category and site.
+- Stock levels at the latest available date and product-site pairs with zero stock.
+- Reconciliation of key totals between Python and SQLite.
 
 ## Dashboard preview
 
 ### Commercial performance
+
 ![Commercial performance dashboard](Screenshots/Performance%20Commerciale.png)
 
 ### Inventory monitoring
+
 ![Inventory monitoring dashboard](Screenshots/Pilotage%20des%20stocks.png)
 
-The Power BI report is available as a [PDF export](powerbi/Sales%20%26%20Inventory%20Analytics%20pdf.pdf) and as a [Power BI Desktop file (.pbix)](powerbi/Sales%20%26%20Inventory%20Analytics.pbix).
+Open the [Power BI report](powerbi/Sales%20%26%20Inventory%20Analytics.pbix) in Power BI Desktop or view its [PDF export](powerbi/Sales%20%26%20Inventory%20Analytics%20pdf.pdf).
 
 ## Key outputs
 
@@ -40,59 +42,34 @@ The Power BI report is available as a [PDF export](powerbi/Sales%20%26%20Invento
 | Stock records | 26,316 |
 | Analysis period | January 2024 – December 2025 |
 
-These figures are calculated from the committed synthetic dataset. The gross margin rate is gross margin divided by revenue.
+These values are calculated from the synthetic dataset. Gross margin rate is gross margin divided by revenue.
 
-## Technical workflow
+## Workflow
 
-```mermaid
-flowchart LR
-    A[CSV source data] --> B[Python / Pandas]
-    B --> C[Data quality checks]
-    C --> D[SQLite database]
-    D --> E[SQL analysis]
-    C --> F[Validated outputs]
-    E --> G[Power BI model]
-    F --> G
-    G --> H[Sales dashboard]
-    G --> I[Inventory dashboard]
-```
+### Python — data validation and outputs
 
-### 1. Data preparation and validation — Python
+[`python/analyse.py`](python/analyse.py) loads the CSV files from [`data/`](data/), checks record uniqueness, referential integrity, quantity constraints and revenue arithmetic, then reconciles total revenue between pandas and SQLite. It generates:
 
-The script in `python/analyse.py`:
-- Loads the CSV files from `data/`.
-- Checks uniqueness of sales line identifiers and stock snapshot keys.
-- Checks referential integrity against product, site and date dimensions.
-- Checks positive sales quantities, non-negative stock and revenue arithmetic.
-- Loads the data into an in-memory SQLite database and reconciles total revenue.
-- Exports monthly revenue and a validation summary to `results/`.
+- [`results/monthly_revenue.csv`](results/monthly_revenue.csv)
+- [`results/validation_summary.csv`](results/validation_summary.csv)
 
-### 2. Business analysis — SQL
+### SQL — business analysis
 
-The queries in [sql/analyses.sql](sql/analyses.sql) cover:
-- Revenue and units sold.
-- Monthly revenue trends.
-- Revenue by site and product.
-- Gross margin by category.
-- Top products.
-- Previous-month comparison using `LAG()`.
-- Product ranking by site using `DENSE_RANK()`.
-- Cumulative revenue using window functions.
-- Latest-date stock and out-of-stock counts.
+[`sql/analyses.sql`](sql/analyses.sql) contains ten queries covering sales totals and trends, results by site and product, gross margin by category, rankings, cumulative revenue, and latest-date stock and out-of-stock counts.
 
-### 3. Data modeling and reporting — Power BI
+### Power BI — modeling and reporting
 
-The report uses separate sales and inventory fact tables with shared dimensions.
+The report separates sales and inventory into two fact tables linked to shared date, product and site dimensions. The expected grains are:
 
-| Table | Role | Expected grain |
-|---|---|---|
-| `fact_sales` | Sales transactions | One row per sales line |
-| `fact_stock` | Inventory snapshots | One row per date, product and site |
-| `dim_date` | Calendar attributes | One row per date |
-| `dim_product` | Product attributes | One row per product |
-| `dim_site` | Site attributes | One row per site |
+| Table | Grain |
+|---|---|
+| `fact_sales` | One row per sales line |
+| `fact_stock` | One row per date, product and site |
+| `dim_date` | One row per date |
+| `dim_product` | One row per product |
+| `dim_site` | One row per site |
 
-Core DAX measures are documented in [powerbi/mesures.dax](powerbi/mesures.dax). The latest-stock measures use the latest date in the current date-filter context; interpret them accordingly.
+Reference measures are available in [`powerbi/mesures.dax`](powerbi/mesures.dax). Stock is a snapshot: do not sum it across dates. The latest-stock measures use the latest date in the current date-filter context.
 
 ## Repository structure
 
@@ -115,44 +92,34 @@ Core DAX measures are documented in [powerbi/mesures.dax](powerbi/mesures.dax). 
 
 ## Run locally
 
-Requirements: Python 3.10 or newer.
+Requires Python 3.10 or newer.
 
 ```bash
 git clone https://github.com/thierry-mhz/Projet_Portfolio_Sales_Stocks.git
 cd Projet_Portfolio_Sales_Stocks
-
 python -m venv .venv
-# Windows: .venv\Scripts\activate
-# macOS / Linux:
-source .venv/bin/activate
+```
 
+Activate the environment (`.venv\Scripts\activate` on Windows, or `source .venv/bin/activate` on macOS/Linux), then install dependencies and run the analysis:
+
+```bash
 pip install -r requirements.txt
 python python/analyse.py
 ```
 
-The script regenerates `results/monthly_revenue.csv` and `results/validation_summary.csv`.
-
-The SQL queries can be run against a SQLite database populated from the CSV files. The Power BI report can be opened with Power BI Desktop.
+The SQL queries can be run in SQLite after importing the CSV files. The Power BI report requires Power BI Desktop.
 
 ## Assumptions and limitations
 
 - The dataset is synthetic; results are illustrative, not operational KPIs.
-- Inventory is a snapshot-based measure, not a real-time stock feed.
-- The SQL query for the latest stock date uses the latest date across the full dataset. If sites have different snapshot dates, a per-site latest-date rule may be more appropriate.
-- The current Python script uses assertions for validation. For production use, replace them with explicit validation exceptions, structured logging and automated tests.
-- The project does not currently demonstrate scheduled refresh or production deployment.
-
-## Potential next steps
-
-- Add automated unit tests with `pytest` and a CI workflow.
-- Add a documented data dictionary and business definitions for each KPI.
-- Add a per-site latest-stock-date analysis and stock ageing / turnover metrics.
-- Improve exception handling and logging in the Python pipeline.
-- Document the Power BI relationship diagram and filter behavior.
+- Inventory is based on snapshots, not a real-time stock feed.
+- Sales and inventory are generated independently; the analysis does not establish a causal relationship between them.
+- The SQL latest-stock query uses the latest date across the full dataset. A per-site latest-date rule may be more appropriate if snapshot dates differ by site.
+- Automated tests, scheduled refresh and production deployment are not included.
 
 ## Author
 
 **Thierry Muhoza**  
 Business Data Analyst | Business Intelligence & Performance Analytics
 
-[LinkedIn](https://linkedin.com/in/muhoza-banyangiriki) · [GitHub profile](https://github.com/thierry-mhz)
+[LinkedIn](https://linkedin.com/in/muhoza-banyangiriki) · [GitHub](https://github.com/thierry-mhz)
