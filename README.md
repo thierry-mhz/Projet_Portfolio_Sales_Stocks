@@ -1,3 +1,5 @@
+
+🌍 **Languages:** [English](README.md) | [Français](README.fr.md)
 # Sales & Inventory Analytics
 ### End-to-end Business Intelligence portfolio project
 
