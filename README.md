@@ -39,20 +39,6 @@ Le modèle s’appuie sur deux tables de faits distinctes (ventes et stocks) rel
 
 **Point d’attention :** le stock est interprété à partir des données disponibles et de leur date de référence. Il ne doit pas être assimilé à un stock temps réel si les données sources ne sont pas actualisées en continu.
 
-## Structure du dépôt
-
-```text
-Projet_Portfolio_Sales_Stocks/
-├── data/                         # Jeux de données synthétiques
-├── python/
-│   └── analyse.py                # Préparation et contrôles qualité
-├── sql/
-│   └── analyses.sql              # Analyses SQL
-├── results/                      # Résultats et exports
-└── powerbi/
-    ├── Projet_Sales_Stocks.pbix   # Rapport Power BI
-    └── mesures.dax               # Mesures DAX
-```
 
 ## Environnement
 
@@ -68,5 +54,5 @@ Projet_Portfolio_Sales_Stocks/
 
 ## Auteur
 
-**Thierry Muhoza Banyangiriki**  
+**Thierry Muhoza**  
 [LinkedIn](https://linkedin.com/in/muhoza-banyangiriki) · [GitHub](https://github.com/thierry-mhz/Projet_Portfolio_Sales_Stocks)
