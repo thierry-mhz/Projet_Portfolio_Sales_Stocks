@@ -152,7 +152,7 @@ The SQL queries can be run against a SQLite database populated from the CSV file
 
 ## Author
 
-**Thierry Muhoza Banyangiriki**  
+**Thierry Muhoza**  
 Business Data Analyst | Business Intelligence & Performance Analytics
 
 [LinkedIn](https://linkedin.com/in/muhoza-banyangiriki) · [GitHub profile](https://github.com/thierry-mhz)
