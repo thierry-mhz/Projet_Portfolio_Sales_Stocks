@@ -85,7 +85,7 @@ Reference measures are available in [`powerbi/mesures.dax`](powerbi/mesures.dax)
 │   ├── Sales & Inventory Analytics pdf.pdf
 │   └── mesures.dax
 ├── Screenshots/          # Dashboard previews
-├── results/              # Generated CSV outputs
+├── results/              # CSV outputs
 ├── requirements.txt
 └── README.md
 ```
