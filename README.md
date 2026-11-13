@@ -90,24 +90,6 @@ Reference measures are available in [`powerbi/mesures.dax`](powerbi/mesures.dax)
 └── README.md
 ```
 
-## Run locally
-
-Requires Python 3.10 or newer.
-
-```bash
-git clone https://github.com/thierry-mhz/Projet_Portfolio_Sales_Stocks.git
-cd Projet_Portfolio_Sales_Stocks
-python -m venv .venv
-```
-
-Activate the environment (`.venv\Scripts\activate` on Windows, or `source .venv/bin/activate` on macOS/Linux), then install dependencies and run the analysis:
-
-```bash
-pip install -r requirements.txt
-python python/analyse.py
-```
-
-The SQL queries can be run in SQLite after importing the CSV files. The Power BI report requires Power BI Desktop.
 
 ## Assumptions and limitations
 
