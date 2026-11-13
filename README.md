@@ -86,7 +86,6 @@ Reference measures are available in [`powerbi/mesures.dax`](powerbi/mesures.dax)
 │   └── mesures.dax
 ├── Screenshots/          # Dashboard previews
 ├── results/              # CSV outputs
-├── requirements.txt
 └── README.md
 ```
 
